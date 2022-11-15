@@ -25,6 +25,13 @@ Adjust and add accordingly to complete the requirements for the final report. Ma
 everything runs smoothly and the code produces a proper report with the correct figures,
 text, and format. If so, submit for review.
 
+I will be taking the SRA run table, add analyze which SNPs have made SARS-CoV-2 more
+transmissible. We will also compare the SNPs of the different spike protein variants.
+Then I will use this data to create figures and graphs of that show different spike
+protein's transmissibility, and also write about how certain SNPs may increase or decrease
+transmission.
+
 ### Change Log
 
+* 2022-11-14: Update the README to become more specific, specifying the goals of the report.
 * 2022-11-11: Initial update of the README and added the SRA bioproject ID.
