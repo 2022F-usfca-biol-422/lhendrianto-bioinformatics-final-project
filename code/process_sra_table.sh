@@ -16,7 +16,5 @@ then
 fi
 
 # use grep to remove the lines containing AMPLICON (Nanopore data)
-echo "The nanopore data from this textfile has been removed"
-echo "Only the Illumina data and header remain..."
 grep -v "AMPLICON" "$1"
 
