@@ -33,5 +33,6 @@ transmission.
 
 ### Change Log
 
+* 2022-11-23: Update the Rmd file to contain code of figures and tables but is currently unpolished
 * 2022-11-14: Update the README to become more specific, specifying the goals of the report.
 * 2022-11-11: Initial update of the README and added the SRA bioproject ID.
