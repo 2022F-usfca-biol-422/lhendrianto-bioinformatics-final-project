@@ -20,7 +20,15 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # Background and Overview
 
-This report will analyze the SNPs found in the variants of SARS-CoV-2. The SNPs were established to effect the transmissibility of the disease. As a result, we will examine which variant has increased transmissibility and what SNPs the variant contains. We will also compare the SNPs between different variants and refer back to the original strain. (Make past tense)
+This report examined how single nucleotide polymorphisms (SNPs) in different strains of SARS-CoV-2 affects their permeability and transmissibility. It has been established through the taken BioProject that the substitution S:655Y enhances replication of the disease, transmitting more efficiently than variants. The primary goal of this analysis were to identify the SNPs present in the variants of the disease and analyze how might the SNPs enhance the transmissibility of the variants. The approach was conducted through a series of bash scripts and Rstudio code. The bash scripts ultimately converted the metadata for the SRA run table to vcf files, which were made accessible to interpret. The analysis was possible through the data contained in the vcf file. 
+
+(INSERT FINDINGS)
+Mock Findings:
+state what the ref nuc and alt nuc is. State what chrom pos and what the snp is. state the quality of score of each chrom pos.
+
+maybe add as of march 22 gamma variant died (maybe got out competed
+maybe add how gamma was prevalent in brazil and associated with increased death risk and severity in younger ages.
+flow - snp lead to increased permeability to increased death
 
 # Methods
 
@@ -43,6 +51,7 @@ library("vcfR")
 library("ggplot2")
 library("dplyr")
 library("ggthemes")
+library("tidyr")
 
 # this loads all function files in the code/functions directory
 function_paths <- list.files("code/functions", full.names = TRUE)
@@ -67,116 +76,54 @@ vcf_with_metadata <- add_genes_metadata_to_vcfstack(
   sra_runtable_path = params$sra_runtable_path,
   stacked_vcf = stacked_vcfs,
   cleaned_genes_table = gene_table)
+vcf_with_metadata$qual <- as.integer(vcf_with_metadata$qual)
+colnames(vcf_with_metadata) <- gsub(" ", "_", colnames(vcf_with_metadata))
 ```
 
 # Figures
+```{r counts-plot}
+# create a counts plot counting the quality scores of each sample
+counts_plot <- ggplot(data = vcf_with_metadata,
+                    aes(x = sample,
+                        y = qual)) +
+  geom_count(col = "tomato3", show.legend = F) +
+  labs(x = "Sample", y = "Quality Score",
+       title = "Quality score of each sample") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(angle = 90, size = 5))
 
-```{r sample-plot}
-# create a plot of unique SNP locations within each gene across all samples
-vcf_with_metadata %>%
-  filter(!is.na(gene)) %>% # get rid of SNPs not in gene regions
-  group_by(gene, pos) %>%
-  tally() %>% # this gives a column n for the number of gene by position
-  group_by(gene) %>%
-  tally() %>% # this collapses that down to the number of unique SNP locations
-  ggplot(aes(x = gene,
-             y = n)) +
-    geom_col() +
-    labs(title = "Count of distinct SNPs in Named SARS-CoV-2 Genes",
-         x = "Gene Name") +
-  theme_few() # get rid of the grey background
+ggsave(plot = counts_plot,
+       filename = paste0("output/counts_plot.png"))
+
+counts_plot
 ```
 
-**Figure 1**: N and S genes have more unique SNPs in the set of samples analyzed.
-
-```{r plot-tallied}
-# create a grouped barplot of the tallied data to include in the knitted
-# document, and save that figure to the output/figures directory as a png
-tallied_plot <- ggplot(data = tallied_subset,
-                       aes(x = geo_type,
-                           y = n,
-                           fill = transportation_type)) +
-  geom_col(position = position_dodge()) +
-  labs(title = paste("Number of cities and/or counties in",
-                     state_to_analyze,
-                     "with mobility data"),
-       x = "Type of area",
-       y = "Number of areas",
-       fill = "Type of transportation")
-
-ggsave(plot = tallied_plot,
-       filename = paste0("output/figures/",
-                         state_no_spaces,
-                         "_",
-                         core_name,
-                         "_tallied_plot.png"))
-
-tallied_plot
-```
-
-```{r plot-time-series}
-# produce a line plot of relative driving mobility across the state with date
-# on the x axis and mean relative mobility on the y axis
-timeseries_plot <- long_subset %>%
-  filter(transportation_type == "driving") %>%
-  group_by(date) %>%
-  summarize(mean_mobility = mean(relative_mobility)) %>%
-  ggplot(aes(x = lubridate::ymd(date),
-             y = mean_mobility)) +
-  geom_line() +
-  labs(title = paste("Statewide mean relative mobility driving levels in",
-                       state_to_analyze,
-                       "during COVID"),
-         x = "Date",
-         y = "Mean relative mobility")
-
-ggsave(plot = timeseries_plot,
-       filename = paste0("output/figures/",
-                         state_no_spaces,
-                         "_",
-                         core_name,
-                         "_timeseries_plot.png"))
-
-timeseries_plot
-```
-
-```{r plot-scattered}
-# produce a scatter plot that visualizes the relative mobility over time
-# using the subsetted state long data
-scatter_plot <- ggplot(data = long_subset,
-                       aes(x = lubridate::ymd(date),
-                           y = relative_mobility)) +
-  geom_point(color = "hot pink", size = 0.1, na.rm = TRUE) +
-  geom_smooth(method = "lm", na.rm = TRUE) +
-  labs(title = paste0(state_to_analyze,
-                      "'s",
-                     " relative mobility over time during COVID era"),
-         x = "Date",
-         y = "Relative mobility")
-
-ggsave(plot = scatter_plot,
-       filename = paste0("output/figures/",
-                         state_no_spaces,
-                         "_",
-                         core_name,
-                         "_scatterplot.png"))
-
-scatter_plot
-```
+**Figure 1** The different samples and the quality scores of their SNPs.
 
 # Tables
+```{r sample-bases-table}
+# create a table showing the samples and how many bases they have and what the
+# test sample is from
 
-```{r example-table}
-# An example table to show the length of each gene using its start and end
-gene_table %>%
-  mutate(length = end - start) %>%
-  select(gene_name, start, end, length) %>%
-  knitr::kable(col.names = c("Gene Name",
-                             "Start",
-                             "End",
-                             "Length"))
+sample_bases_table <- vcf_with_metadata %>% select(sample, Bases, Isolation_source) %>%
+  unique()
+
+sample_bases_table
 ```
 
-**Table 1**: Gene names, locations, and lengths in the SARS-CoV-2 genome. Higher SNP counts in the S and N genes may be related to the larger size of these genes.
+**Table 1** All of the samples, their base length, and isolation source
+
+```{r SNP-table}
+# create a table showing the samples and their SNP position along with the reference nucleotide
+
+SNP_table <- stacked_vcfs %>%
+  select(sample, ref, alt, pos) %>% reshape(stacked_vcfs, direction = "wide", idvar = "sample", timevar = "pos", varying = NULL, v.names = NULL, drop = NULL) %>%
+  knitr::kable(col.names = c("Sample", "Ref. nucleotide 8782", "SNP 8782",
+                             "Ref. nucleotide 18060", "SNP 18060", "Ref. nucleotide 23525", "SNP 23525", "Ref. nucleotide 28144", "SNP 28144", "Ref. nucleotide 29737", "SNP 29737", "Ref. nucleotide 18883", "SNP 18883"), align = "lcccccccccccc")
+
+SNP_table
+```
+
+**Table 1**: Each sample, position, and the reference nucleotide and SNP
 
 # Sources Cited
