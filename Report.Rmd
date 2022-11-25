@@ -86,7 +86,7 @@ colnames(vcf_with_metadata) <- gsub(" ", "_", colnames(vcf_with_metadata))
 counts_plot <- ggplot(data = vcf_with_metadata,
                     aes(x = sample,
                         y = qual)) +
-  geom_count(col = "tomato3", show.legend = F) +
+  geom_count(col = "blue", show.legend = F) +
   labs(x = "Sample", y = "Quality Score",
        title = "Quality score of each sample") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -105,25 +105,30 @@ counts_plot
 # create a table showing the samples and how many bases they have and what the
 # test sample is from
 
-sample_bases_table <- vcf_with_metadata %>% select(sample, Bases, Isolation_source) %>%
-  unique()
+vcf_with_metadata %>%
+  select(sample, Bases, Isolation_source) %>% unique() %>%
+  knitr::kable(col.names = c("Sample",
+                             "Bases",
+                             "Isolation source"), row.names = FALSE,
+               align = "ccl")
 
-sample_bases_table
 ```
 
 **Table 1** All of the samples, their base length, and isolation source
 
-```{r SNP-table}
-# create a table showing the samples and their SNP position along with the reference nucleotide
+```{r snp-table}
+# create a table showing the samples and how many bases they have and what the
+# test sample is from
 
-SNP_table <- stacked_vcfs %>%
-  select(sample, ref, alt, pos) %>% reshape(stacked_vcfs, direction = "wide", idvar = "sample", timevar = "pos", varying = NULL, v.names = NULL, drop = NULL) %>%
-  knitr::kable(col.names = c("Sample", "Ref. nucleotide 8782", "SNP 8782",
-                             "Ref. nucleotide 18060", "SNP 18060", "Ref. nucleotide 23525", "SNP 23525", "Ref. nucleotide 28144", "SNP 28144", "Ref. nucleotide 29737", "SNP 29737", "Ref. nucleotide 18883", "SNP 18883"), align = "lcccccccccccc")
+stacked_vcfs %>%
+  select(sample, ref, alt) %>% unique() %>%
+  knitr::kable(col.names = c("Sample",
+                             "Ref. Nucleotide",
+                            "SNP"),
+               row.names = FALSE, align = "lcc")
 
-SNP_table
 ```
 
-**Table 1**: Each sample, position, and the reference nucleotide and SNP
+**Table 2**: Each sample, position, and the reference nucleotide and SNP
 
 # Sources Cited
