@@ -20,15 +20,11 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # Background and Overview
 
-This report examined how single nucleotide polymorphisms (SNPs) in different strains of SARS-CoV-2 affects their permeability and transmissibility. It has been established through the taken BioProject that the substitution S:655Y enhances replication of the disease, transmitting more efficiently than variants. The primary goal of this analysis were to identify the SNPs present in the variants of the disease and analyze how might the SNPs enhance the transmissibility of the variants. The approach was conducted through a series of bash scripts and Rstudio code. The bash scripts ultimately converted the metadata for the SRA run table to vcf files, which were made accessible to interpret. The analysis was possible through the data contained in the vcf file. 
+This report examined how single nucleotide polymorphisms (SNPs) in different strains of SARS-CoV-2 affects their permeability and transmissibility. It has been established through the taken BioProject that the substitution S:655Y enhances replication of the disease, transmitting more efficiently than variants. The primary goal of this analysis were to identify the SNPs present in the variants of the disease and analyze how might the SNPs enhance the transmissibility of the variants. The approach was conducted through a series of bash scripts and Rstudio code. The bash scripts ultimately converted the metadata for the SRA run table to vcf files, which were made accessible to interpret. The analysis was possible through the data contained in the vcf file.
 
-(INSERT FINDINGS)
-Mock Findings:
-state what the ref nuc and alt nuc is. State what chrom pos and what the snp is. state the quality of score of each chrom pos.
+(INSERT FINDINGS) Mock Findings: state what the ref nuc and alt nuc is. State what chrom pos and what the snp is. state the quality of score of each chrom pos.
 
-maybe add as of march 22 gamma variant died (maybe got out competed
-maybe add how gamma was prevalent in brazil and associated with increased death risk and severity in younger ages.
-flow - snp lead to increased permeability to increased death
+maybe add as of march 22 gamma variant died (maybe got out competed maybe add how gamma was prevalent in brazil and associated with increased death risk and severity in younger ages. flow - snp lead to increased permeability to increased death
 
 # Methods
 
@@ -36,11 +32,11 @@ See the set of tutorials on the [vcfR package website](https://knausb.github.io/
 
 You may also want to use any of a range of different COVID data packages and data sources:
 
-* https://kjhealy.github.io/covdata/
-* https://github.com/como-ph/oxcovid19
-* https://ropensci.org/blog/2020/10/20/searching-medrxivr-and-biorxiv-preprint-data/
-* https://covidtracking.com/data/api
-  * `readr::read_csv("https://api.covidtracking.com/v1/states/daily.csv")`
+-   <https://kjhealy.github.io/covdata/>
+-   <https://github.com/como-ph/oxcovid19>
+-   <https://ropensci.org/blog/2020/10/20/searching-medrxivr-and-biorxiv-preprint-data/>
+-   <https://covidtracking.com/data/api>
+    -   `readr::read_csv("https://api.covidtracking.com/v1/states/daily.csv")`
 
 ## Subsections are ok too
 
@@ -78,57 +74,95 @@ vcf_with_metadata <- add_genes_metadata_to_vcfstack(
   cleaned_genes_table = gene_table)
 vcf_with_metadata$qual <- as.integer(vcf_with_metadata$qual)
 colnames(vcf_with_metadata) <- gsub(" ", "_", colnames(vcf_with_metadata))
+
 ```
 
 # Figures
-```{r counts-plot}
-# create a counts plot counting the quality scores of each sample
-counts_plot <- ggplot(data = vcf_with_metadata,
-                    aes(x = sample,
-                        y = qual)) +
-  geom_count(col = "blue", show.legend = F) +
-  labs(x = "Sample", y = "Quality Score",
-       title = "Quality score of each sample") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  theme(axis.text.x = element_text(angle = 90, size = 5))
 
-ggsave(plot = counts_plot,
-       filename = paste0("output/counts_plot.png"))
+```{r dot-plot}
+# create a dot plot mapping out all of the samples collection date and
+# their quality score
+dot_plot <- ggplot(vcf_with_metadata[which(vcf_with_metadata$qual>150),],
+                       aes(x = Collection_Date,
+                           y = qual)) +
+  geom_point(col = "black", size = 1) +
+  scale_x_date(date_labels = "%Y-%b-%d",date_breaks  = "1 month") +
+  labs(x = "Date of sample collection",
+       y = "Quality score of sample",
+       title = "The collection date and quality score of each sample") +
+    theme(axis.text.x = element_text(angle = 0, size = 7)) +
+  theme(axis.text.y = element_text(angle = 0, size = 7)) +
+  theme(plot.title = element_text(hjust = 0.5))
 
-counts_plot
+dot_plot
 ```
 
-**Figure 1** The different samples and the quality scores of their SNPs.
+**Figure 1** The collection date of the samples and their quality scores
+
+```{r SNP-quality-plot}
+# create a flipped bar plot showing which SNPs are quality SNPs and which
+# should be excluded
+bar_plot <- ggplot(data = vcf_with_metadata,
+                    aes(x = alt,
+                        y = qual)) +
+  geom_col(position = "dodge") +
+  labs(x = "DNA base",
+       y = "Quality score",
+       title = "Quality of SNP") +
+    theme(axis.text.x = element_text(angle = 0, size = 7)) +
+  theme(axis.text.y = element_text(angle = 0, size = 7)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 1.75)) +
+  coord_flip()
+
+bar_plot
+```
+
+**Figure 2** The quality and confidence of the SNPs in the BioProject
 
 # Tables
+
 ```{r sample-bases-table}
-# create a table showing the samples and how many bases they have and what the
-# test sample is from
+# create a table showing the samples and what the isolation source is, and how
+# many bases they have
 
 vcf_with_metadata %>%
-  select(sample, Bases, Isolation_source) %>% unique() %>%
+  select(sample, Isolation_source, Bases) %>% unique() %>%
   knitr::kable(col.names = c("Sample",
-                             "Bases",
-                             "Isolation source"), row.names = FALSE,
-               align = "ccl")
+                             "Isolation source",
+                             "Number of Bases"), row.names = FALSE,
+               align = "lll")
 
 ```
 
-**Table 1** All of the samples, their base length, and isolation source
+**Table 1** The test samples and where they originated from
 
 ```{r snp-table}
-# create a table showing the samples and how many bases they have and what the
-# test sample is from
+# create a table mapping out where the SNP occurs
 
 stacked_vcfs %>%
-  select(sample, ref, alt) %>% unique() %>%
-  knitr::kable(col.names = c("Sample",
+  select(pos, ref, alt) %>% unique() %>%
+  knitr::kable(col.names = c("Chromosome position",
                              "Ref. Nucleotide",
-                            "SNP"),
+                             "SNP"),
                row.names = FALSE, align = "lcc")
 
 ```
 
-**Table 2**: Each sample, position, and the reference nucleotide and SNP
+**Table 2**: Where each SNP occurs
+
+```{r date-table}
+# create a table showing when the samples were collected and released
+
+vcf_with_metadata %>%
+  arrange(vcf_with_metadata$Collection_Date) %>%
+  select(Collection_Date, ReleaseDate) %>% unique() %>%
+  knitr::kable(col.names = c("Collection Date",
+                             "Release Date"),
+               row.names = FALSE, align = "ll")
+
+```
+
+**Table 3**: The samples collection date and release date
 
 # Sources Cited
