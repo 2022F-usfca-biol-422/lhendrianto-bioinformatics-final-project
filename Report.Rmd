@@ -192,13 +192,14 @@ vcf_with_metadata %>%
 ```{r bad-SNP-table}
 vcf_with_metadata[which(vcf_with_metadata$qual < 150), ] %>%
   arrange((vcf_with_metadata[which(vcf_with_metadata$qual < 150), ])$pos) %>%
-  select(pos, alt, qual) %>% 
+  select(pos, alt, qual) %>%
   unique() %>%
   knitr::kable(col.names = c("Chromosome position",
                              "SNP",
                              "Quality score"),
                               row.names = FALSE,
                               align = "lcc")
+
 ```
 
 **Table 4**: The quality score of the SNPs that were excluded in the analysis
