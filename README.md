@@ -33,6 +33,7 @@ transmission.
 
 ### Change Log
 
-* 2022-11-23: Update the Rmd file to contain code of figures and tables but is currently unpolished
+* 2022-12-2: Added a chunk of text for the Background and overview
+* 2022-12-1: Added a tabular data acquired through the Center for Disease Control and Prevention website.
 * 2022-11-14: Update the README to become more specific, specifying the goals of the report.
 * 2022-11-11: Initial update of the README and added the SRA bioproject ID.
