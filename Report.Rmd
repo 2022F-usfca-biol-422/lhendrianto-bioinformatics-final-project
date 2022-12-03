@@ -78,11 +78,11 @@ covid_tabular_data <- read_csv(file = "data/raw_data/covid_tabular_data.csv")
 ```{r dot-plot}
 # create a dot plot mapping out all of the samples collection date and
 # their quality score
-dot_plot <- ggplot(vcf_with_metadata[which(vcf_with_metadata$qual > 150),],
+dot_plot <- ggplot(vcf_with_metadata[which(vcf_with_metadata$qual > 150), ],
                        aes(x = Collection_Date,
                            y = qual)) +
   geom_point(col = "black", size = 1) +
-  scale_x_date(date_labels = "%Y-%b-%d",date_breaks  = "1 month") +
+  scale_x_date(date_labels = "%Y-%b-%d", date_breaks  = "1 month") +
   labs(x = "Date of sample collection",
        y = "Quality score of sample",
        title = "The collection date and quality score of each sample") +
@@ -140,11 +140,13 @@ time_plot
 # many bases they have
 
 vcf_with_metadata %>%
-  select(sample, Isolation_source, geo_loc_name) %>% unique() %>%
+  select(sample, Isolation_source, geo_loc_name) %>%
+  unique() %>%
   knitr::kable(col.names = c("Sample",
                              "Isolation source",
-                             "Number of Bases"), row.names = FALSE,
-               align = "lll")
+                             "Number of Bases"),
+                              row.names = FALSE,
+                              align = "lll")
 
 ```
 
@@ -154,13 +156,14 @@ vcf_with_metadata %>%
 # create a table mapping out where the SNP occurs
 
 vcf_with_metadata %>%
-  select(pos, ref, alt, gene) %>% unique() %>%
+  select(pos, ref, alt, gene) %>%
+  unique() %>%
   knitr::kable(col.names = c("Chromosome position",
                              "Ref. Nucleotide",
                              "SNP",
                              "Gene affected"),
-               row.names = FALSE,
-               align = "lccc",
+                              row.names = FALSE,
+                              align = "lccc",
                na.rm = TRUE)
 
 ```
@@ -172,26 +175,30 @@ vcf_with_metadata %>%
 
 vcf_with_metadata %>%
   arrange(vcf_with_metadata$Collection_Date) %>%
-  select(Collection_Date, ReleaseDate, alt, gene, pos) %>% unique() %>%
+  select(Collection_Date, ReleaseDate, alt, gene, pos) %>%
+  unique() %>%
   knitr::kable(col.names = c("Collection Date",
                              "Release Date",
                              "SNP",
                              "Gene",
                              "Position"),
-               row.names = FALSE, align = "ll")
+                              row.names = FALSE,
+                              align = "ll")
 
 ```
 
 **Table 3**: The samples collection date and release date
 
 ```{r bad-SNP-table}
-vcf_with_metadata[which(vcf_with_metadata$qual < 150),] %>%
-  arrange((vcf_with_metadata[which(vcf_with_metadata$qual < 150),])$pos) %>%
+vcf_with_metadata[which(vcf_with_metadata$qual < 150), ] %>%
+  arrange((vcf_with_metadata[which(vcf_with_metadata$qual < 150), ])$pos) %>%
   select(pos, alt, qual) %>% 
   unique() %>%
   knitr::kable(col.names = c("Chromosome position",
                              "SNP",
-                             "Quality score"), row.names = FALSE, align = "lcc")
+                             "Quality score"),
+                              row.names = FALSE,
+                              align = "lcc")
 ```
 
 **Table 4**: The quality score of the SNPs that were excluded in the analysis
