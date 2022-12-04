@@ -199,7 +199,6 @@ vcf_with_metadata %>%
                               row.names = FALSE,
                               align = "lccc",
                na.rm = TRUE)
-
 ```
 
 **Table 4**: The SNPs and their reference nucleotide, and the affected gene
