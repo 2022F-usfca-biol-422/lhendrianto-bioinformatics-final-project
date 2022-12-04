@@ -33,8 +33,8 @@ transmission.
 
 ### Change Log
 
-* 2022-12-3: Added initial completion of Background, Methods, and Results.
+* 2022-12-3: Added initial completion of Background, Methods, and Results. Also fixed errors in the docker check.
 * 2022-12-2: Added a chunk of text for the Background and overview, and a chunk of Results and Methods.
 * 2022-12-1: Added a tabular data acquired through the Center for Disease Control and Prevention website.
 * 2022-11-14: Update the README to become more specific, specifying the goals of the report.
-* 2022-11-11: Initial update of the README and added the SRA bioproject ID.
+* 2022-11-11: Initial update of the README and added the SRA BioProject ID.
