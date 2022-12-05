@@ -96,7 +96,7 @@ dot_plot <- ggplot(vcf_with_metadata[which(vcf_with_metadata$qual > 150), ],
 dot_plot
 ```
 
-**Figure 1** The collection date of the samples and their quality scores
+**Figure 1**: The collection date of the samples and their quality scores
 
 ```{r bar-plot}
 # create a flipped bar plot showing SNPs quality score
@@ -116,7 +116,7 @@ bar_plot <- ggplot(data = vcf_with_metadata,
 bar_plot
 ```
 
-**Figure 2** The SNPs quality score
+**Figure 2**: The SNPs quality score
 
 ```{r time-line-plot}
 # create a time-line plot that shows the total deaths from
@@ -134,7 +134,7 @@ time_plot <- ggplot(data = covid_tabular_data,
 time_plot
 ```
 
-**Figure 3** The cumulative deaths since the emergence of Omicron in the United States
+**Figure 3**: The cumulative deaths since the emergence of Omicron in the United States
 
 # Tables
 
@@ -152,7 +152,7 @@ vcf_with_metadata %>%
 
 ```
 
-**Table 1** The Isolation source of the samples and collection location
+**Table 1**: The Isolation source of the samples and collection location
 
 ```{r date-table}
 # create a table showing when the collection and release date of the sample
