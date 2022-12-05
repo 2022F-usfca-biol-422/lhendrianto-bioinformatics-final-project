@@ -33,6 +33,7 @@ transmission.
 
 ### Change Log
 
+* 2022-12-04: Versoin 3. Added paragraph indents and fixed table and fig in-text referencs.
 * 2022-12-04: Version 2. Added initial completion of Discussion section, and inline code/italics syntax.
 * 2022-12-04: Added initial chunk of Discussion section and updated title to be more specific.
 * 2022-12-03: Added initial completion of Background, Methods, and Results. Also fixed errors in the docker check.
