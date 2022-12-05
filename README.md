@@ -28,11 +28,12 @@ text, and format. If so, submit for review.
 I will be taking the SRA run table, add analyze which SNPs have made SARS-CoV-2 more
 transmissible. We will also compare the SNPs of the different spike protein variants.
 Then I will use this data to create figures and graphs of that show different spike
-protein's transmissibility, and also write about how certain SNPs may increase or decrease
+protein's transmissibility, and also write about how certain SNPs may increase or decrease 
 transmission.
 
 ### Change Log
 
+* 2022-12-04: Version 2. Added initial completion of Discussion section, and inline code/italics syntax.
 * 2022-12-04: Added initial chunk of Discussion section and updated title to be more specific.
 * 2022-12-03: Added initial completion of Background, Methods, and Results. Also fixed errors in the docker check.
 * 2022-12-02: Added a chunk of text for the Background and overview, and a chunk of Results and Methods.
