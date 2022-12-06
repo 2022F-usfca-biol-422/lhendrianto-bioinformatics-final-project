@@ -27,7 +27,7 @@ text, and format. If so, submit for review.
 
 I will be taking the SRA run table, add analyze which SNPs have made SARS-CoV-2 more
 transmissible. We will also compare the SNPs of the different spike protein variants.
-Then I will use this data to create figures and graphs of that show different spike
+Then I will use this data to create figures and graphs of that the spike
 protein's transmissibility, and also write about how certain SNPs may increase or decrease 
 transmission.
 
