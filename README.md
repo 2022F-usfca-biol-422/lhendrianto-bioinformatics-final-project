@@ -33,6 +33,7 @@ transmission.
 
 ### Change Log
 
+* 2022-12-06: Finalize Rmd file, README, and reference list for submission.
 * 2022-12-05: Added reference list and citations.
 * 2022-12-04: Version 3. Added paragraph indents and fixed table and fig in-text references.
 * 2022-12-04: Version 2. Added initial completion of Discussion section, and inline code/italics syntax.
