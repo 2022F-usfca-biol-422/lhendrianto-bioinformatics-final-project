@@ -108,7 +108,7 @@ bar_plot <- ggplot(data = vcf_with_metadata,
   geom_col(position = "dodge") +
   labs(x = "DNA base",
        y = "Quality score",
-       title = "Quality of SNP") +
+       title = "Quality scores of each SNP") +
     theme(axis.text.x = element_text(angle = 0, size = 7)) +
   theme(axis.text.y = element_text(angle = 0, size = 7)) +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -118,7 +118,7 @@ bar_plot <- ggplot(data = vcf_with_metadata,
 bar_plot
 ```
 
-**Figure 2**: The SNPs quality score
+**Figure 2**: The quality score of each SNP identified in SARS-CoV-2
 
 ```{r time-line-plot}
 # create a time-line plot that shows the total deaths from
@@ -128,7 +128,8 @@ time_plot <- ggplot(data = covid_tabular_data,
   geom_line(aes(y = Total_Deaths)) +
   geom_point(aes(y = Total_Deaths)) +
   labs(x = "Date",
-       y = "Number of Deaths") +
+       y = "Number of Deaths",
+       title = "Cumulative deaths after the discovery of Omicron") +
   scale_x_date(date_breaks = "1 month") +
   theme(axis.text.x = element_text(angle = 60, size = 5, hjust = 1)) +
   scale_y_continuous(labels = scales::comma)
@@ -154,7 +155,7 @@ vcf_with_metadata %>%
 
 ```
 
-**Table 1**: The Isolation source of the samples and collection location
+**Table 1**: The isolation source and location of each sample in the experiment
 
 ```{r date-table}
 # create a table showing when the collection and release date of the sample
@@ -169,11 +170,11 @@ vcf_with_metadata %>%
                              "Gene",
                              "Position"),
                               row.names = FALSE,
-                              align = "ll")
+                              align = "lllll")
 
 ```
 
-**Table 2**: The conserved SNPs and their two collection time frames
+**Table 2**: The conserved SNPs and their collection timeframe
 
 ```{r bad-SNP-table}
 # create a table that shows the SNPs with bad quality scores to rule out of
@@ -190,7 +191,7 @@ vcf_with_metadata[which(vcf_with_metadata$qual < 150), ] %>%
 
 ```
 
-**Table 3**: The SNPs that are excluded in the analysis
+**Table 3**: The excluded SNPs that posessed a low quality score
 
 ```{r snp-table}
 # create a table mapping out where the SNP occurs and the affected gene
